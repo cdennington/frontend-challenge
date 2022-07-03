@@ -1,4 +1,18 @@
+:root {
+  --color-black: black;
+}
+
 header {
+  background-color: var(--color-black);
+  height: 76px;
   position: sticky;
   top: 0;
+}
+
+.app-logo {
+  left: 50%;
+  max-width: 90px;
+  position: absolute;
+  top: 32px;
+  transform: translateX(-50%);
 }

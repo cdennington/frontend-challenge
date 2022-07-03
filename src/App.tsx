@@ -8,26 +8,34 @@ import logo from './img/mortal-kombat-logo.png'
 import './App.css'
 import jsonData from './data/characters.json'
 import type { Character } from './types'
+import SquadAverage from './componenets/SquadAverage';
 const data: Character[] = jsonData as Character[]
 
 function App() {
+  // TODO: list out all of the object params for tags and selectedSquad
   const [allTags, setAllTags] = useState([] as any);
   const [selectedSquad, setSelectedSquad] = useState([] as any);
+  const [allFighters] = useState(data);
+  const [filteredFighters, setFilteredFighters] = useState(data);
   const [searchTerm, setSearchTerm] = useState('');
   const abilityList = useRef(['Power', 'Mobility', 'Technique', 'Survivability', 'Energy']);
-  // const [selectedMember, setSelectedMember] = useState(null);
 
   const submitSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value);
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    setSearchTerm(value);
+    const filterSearch = allFighters.filter((fighter) => fighter.name.toLowerCase().includes(value));
+    setFilteredFighters(filterSearch);
+  };
 
   const generateListOfTags = useCallback(
     () => {
       // TODO: rename const
       const arr: any[] = [];
-      data.forEach((fighter) => {
+      allFighters.forEach((fighter) => {
         if (typeof fighter.tags !== 'undefined') {
           fighter.tags.forEach((tag) => {
             const tagExists = arr.filter((a) => a.tag_name === tag.tag_name);
@@ -40,7 +48,7 @@ function App() {
 
       setAllTags(arr);
     },
-    [],
+    [allFighters],
   );
 
   useEffect(() => {
@@ -55,7 +63,19 @@ function App() {
     };
   }, [generateListOfTags]);
 
-  console.log(data);
+  const amendSquad = (add: any, fighter: { id: number; }) => {
+    const selectedSquadClone = JSON.parse(JSON.stringify(selectedSquad));
+
+    if (add) {
+      selectedSquadClone.push(fighter);
+    } else {
+      const index = selectedSquadClone.findIndex((obj: { id: number; }) => obj.id === fighter.id);
+      selectedSquadClone.splice(index, 1);
+    }
+
+    setSelectedSquad(selectedSquadClone);
+  };
+
   return (
     <div className="app">
       <header className="app-header">
@@ -66,35 +86,21 @@ function App() {
           {selectedSquad.length > 0 ? 'Your champions!' : 'Select your squad to defend earthrealm'}
         </h1>
         <div className="selected-squad--wrapper">
-          {selectedSquad.map((member: { name: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.ReactPortal | null | undefined; }) => (
-            <div className="selected-squad--member">
-              {member.name}
-            </div>
+          {selectedSquad.map((member: {
+            thumbnail: string;
+            name: string;
+            id: number;
+          }) => (
+            <button
+              type="button"
+              className="selected-squad--member"
+              onClick={() => amendSquad(false, member)}
+            >
+              <img src={member.thumbnail} alt={member.name} />
+            </button>
           ))}
         </div>
-        <div className="selected-member--wrapper">
-          <div className="selected-member--stat">
-            <span>Power</span>
-            dsfsdf
-          </div>
-          <div className="selected-member--stat">
-            <span>Mobility</span>
-            dsfsdf
-          </div>
-          <div className="selected-member--stat">
-            <span>Technique</span>
-            dsfsdf
-          </div>
-          <div className="selected-member--stat">
-            <span>Survability</span>
-            dsfsdf
-          </div>
-          <div className="selected-member--stat">
-            <span>Energy</span>
-            dsfsdf
-          </div>
-          <small>* Totals as average for squad</small>
-        </div>
+        <SquadAverage selectedSquad={selectedSquad} abilityList={abilityList} />
         <div className="search-form--wrapper">
           {/* TODO: add validation */}
           <form noValidate onSubmit={(e) => submitSearch(e)}>
@@ -121,7 +127,7 @@ function App() {
           </form>
         </div>
         <div className="tags--wrapper">
-          {allTags.map((tag: { tag_name: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.ReactPortal | null | undefined; }) => (
+          {allTags.map((tag: { tag_name: string; }) => (
             <div className="individual-tag">
               {tag.tag_name}
             </div>
@@ -139,22 +145,38 @@ function App() {
               </tr>
             </thead>
             <tbody>
-              {data.map((fighter) => (
+              {filteredFighters.map((fighter: {
+                abilities: any;
+                tags: any;
+                thumbnail: string;
+                name: string;
+                id: number;
+              }) => (
                 <tr key={fighter.id}>
                   <th scope="row">
+                    {/* TODO: move to actual function */}
+                    <input
+                      type="checkbox"
+                      name={String(fighter.id)}
+                      checked={typeof selectedSquad.filter((member: { id: number; }) => member.id === fighter.id)[0] !== 'undefined'}
+                      onChange={(e) => {
+                        const { checked } = e.target;
+                        amendSquad(checked, fighter);
+                      }}
+                    />
                     <img src={fighter.thumbnail} alt={fighter.name} />
                     {fighter.name}
                   </th>
                   <td>
                     {typeof fighter.tags !== 'undefined'
-                      && fighter.tags.map((tag) => (
-                        <div className="individual-tag">
+                      && fighter.tags.map((tag: { tag_name: string; }) => (
+                        <div className="individual-tag" key={tag.tag_name}>
                           {tag.tag_name}
                         </div>
                       ))}
                   </td>
                   {abilityList.current.map((ability) => {
-                    const abilities = fighter.abilities.filter((a) => a.abilityName === ability)[0];
+                    const abilities = fighter.abilities.filter((a: { abilityName: string; }) => a.abilityName === ability)[0];
 
                     if (typeof abilities !== 'undefined') {
                       return <th scope="col" key={ability}>{abilities.abilityScore}</th>
@@ -167,8 +189,8 @@ function App() {
             </tbody>
           </table>
         </div>
-      </main>
-    </div>
+      </main >
+    </div >
   )
 }
 
