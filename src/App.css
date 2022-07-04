@@ -1,18 +1,307 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
 :root {
-  --color-black: black;
+  --color-white     : white;
+  --color-black     : black;
+  --color-blue      : #217AFF;
+  --color-grey      : #666666;
+  --color-light-grey: #777777;
+  --color-red       : #FF0000;
+  --color-light-blue: #EDF5FF;
+  --color-bg        : #F5FDFF;
+}
+
+body {
+  background-color: var(--color-bg);
+  font-family     : 'Roboto', sans-serif;
+  margin          : 0;
+}
+
+button {
+  appearance: none;
+  background: transparent;
+  border    : 0;
+  cursor    : pointer;
+}
+
+h1 {
+  font-size  : 24px;
+  font-weight: 700;
+  line-height: 28px;
+  margin     : 70px 0 16px;
+  text-align : center;
 }
 
 header {
   background-color: var(--color-black);
-  height: 76px;
-  position: sticky;
-  top: 0;
+  height          : 76px;
+  position        : sticky;
+  top             : 0;
+  z-index         : 99;
 }
 
 .app-logo {
-  left: 50%;
+  left     : 50%;
   max-width: 90px;
-  position: absolute;
-  top: 32px;
+  position : absolute;
+  top      : 32px;
   transform: translateX(-50%);
+}
+
+.selected-squad--wrapper {
+  align-items    : center;
+  display        : flex;
+  justify-content: center;
+}
+
+.selected-squad--wrapper button {
+  border-radius: 50%;
+  border       : 1px solid var(--color-blue);
+  height       : 80px;
+  margin       : 0 6px;
+  overflow     : hidden;
+  padding      : 0;
+  position     : relative;
+  width        : 80px;
+}
+
+.selected-squad--wrapper button:before {
+  align-items    : center;
+  background     : linear-gradient(0deg, rgba(33, 122, 255, 0.6), rgba(33, 122, 255, 0.6));
+  color          : var(--color-white);
+  content        : "Remove";
+  display        : flex;
+  font-weight    : 700;
+  font-size      : 14px;
+  height         : 100%;
+  justify-content: center;
+  line-height    : 16px;
+  left           : 0;
+  opacity        : 0;
+  position       : absolute;
+  top            : 0;
+  transition     : opacity .3s ease-in-out;
+  width          : 100%;
+}
+
+.selected-squad--wrapper button:hover:before {
+  opacity: 1;
+}
+
+.selected-squad--wrapper img {
+  object-fit: cover;
+}
+
+.selected-member--wrapper {
+  align-items    : center;
+  display        : flex;
+  flex-wrap      : wrap;
+  justify-content: center;
+  max-width      : 500px;
+  margin         : 40px auto;
+}
+
+.selected-member--wrapper small {
+  color      : var(--color-grey);
+  font-size  : 12px;
+  line-height: 14px;
+  margin     : 10px auto 0 0;
+}
+
+.selected-member--stat {
+  font-weight: 700;
+  font-size  : 24px;
+  line-height: 28px;
+  position   : relative;
+  text-align : center;
+  width      : 20%;
+}
+
+.selected-member--stat:nth-child(3n):before,
+.selected-member--stat:nth-child(3n):after {
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, #000000 51.04%, rgba(0, 0, 0, 0) 100%);
+  content   : "";
+  display   : inline-block;
+  height    : 100px;
+  position  : absolute;
+  top       : 50%;
+  transform : translateY(-50%);
+  width     : 1px;
+}
+
+.selected-member--stat:nth-child(3n):before {
+  left: 0;
+}
+
+.selected-member--stat:nth-child(3n):after {
+  right: 0;
+}
+
+.selected-member--stat span {
+  display    : block;
+  font-weight: 400;
+  font-size  : 16px;
+  line-height: 19px;
+  margin     : 0 0 20px;
+}
+
+.search-form--wrapper {
+  max-width: 500px;
+  margin   : 40px auto;
+  position : relative;
+}
+
+.search-form--wrapper:before {
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, #000000 51.04%, rgba(0, 0, 0, 0) 100%);
+  content   : "";
+  display   : inline-block;
+  height    : 1px;
+  left      : 50%;
+  position  : absolute;
+  top       : 50%;
+  transform : translate(-50%, -50%);
+  width     : 920px;
+}
+
+.search-form--wrapper form {
+  position: relative;
+}
+
+.search-form--wrapper form button {
+  left     : 10px;
+  padding  : 0;
+  position : absolute;
+  top      : 50%;
+  transform: translateY(-50%);
+}
+
+.search-form--wrapper form button svg {
+  display: block;
+}
+
+.input-wrapper input {
+  background   : var(--color-white);
+  border       : 1px solid var(--color-light-grey);
+  border-radius: 4px;
+  display      : block;
+  padding      : 10px 37px;
+  width        : 100%;
+}
+
+.input-wrapper label {
+  display: none;
+}
+
+.tags--wrapper {
+  display: flex;
+}
+
+.individual-tag {
+  align-items    : center;
+  border         : 1px solid var(--color-blue);
+  border-radius  : 20px;
+  color          : var(--color-blue);
+  cursor         : pointer;
+  display        : flex;
+  font-weight    : 400;
+  font-size      : 18px;
+  justify-content: center;
+  line-height    : 21px;
+  padding        : 10px 16px;
+  transition     : all .3s ease-in-out;
+}
+
+.individual-tag svg {
+  fill        : var(--color-white);
+  margin-right: 5px;
+  opacity     : 0;
+  visibility  : hidden;
+  transition  : all .3s ease-in-out;
+  width       : 15px;
+}
+
+.individual-tag.active {
+  background-color: var(--color-blue);
+  color           : var(--color-white);
+}
+
+.individual-tag.active svg {
+  opacity   : 1;
+  visibility: visible;
+}
+
+.tags--wrapper {
+  display  : flex;
+  flex-wrap: wrap;
+  max-width: 1200px;
+  margin   : 0 auto 50px;
+}
+
+.tags--wrapper .individual-tag {
+  margin: 0 5px 10px;
+}
+
+.fighter-table--wrapper {
+  max-width: 1080px;
+  margin   : 0 auto;
+}
+
+.fighter-table--wrapper table {
+  border-spacing: 0;
+  width         : 100%;
+}
+
+td.active {
+  color: var(--color-red);
+}
+
+.clear-all {
+  color          : var(--color-light-grey);
+  margin-left    : 10px;
+  padding        : 0;
+  text-decoration: underline;
+}
+
+table tbody {
+  box-shadow   : 0px 2px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
+}
+
+table th {
+  font-weight: 700;
+  font-size  : 20px;
+  line-height: 23px;
+  padding    : 10px 0;
+  text-align : left;
+}
+
+table tbody tr {
+  background-color: var(--color-white);
+}
+
+table tr.active {
+  background-color: var(--color-light-blue);
+}
+
+table td {
+  font-weight: 700;
+  font-size  : 20px;
+  line-height: 23px;
+  padding    : 20px;
+}
+
+table td .tags--wrapper {
+  margin: 0;
+}
+
+.table-row-fighter--wrapper {
+  display: flex;
+}
+
+.table-row-fighter--wrapper img {
+  border       : 1px solid var(--color-blue);
+  border-radius: 50%;
+  height       : 40px;
+  margin       : 0 20px;
+  width        : 40px;
 }
